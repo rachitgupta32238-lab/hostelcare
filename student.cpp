@@ -9,70 +9,7 @@
 
 using namespace std;
 
-// =====================================================
-// STRUCTURES
-// =====================================================
-
-struct Student {
-
-    int studentId;
-    string name;
-    string roomNo;
-    string contact;
-};
-
-struct Complaint {
-
-    int complaintId;
-    int studentId;
-
-    string studentName;
-    string roomNo;
-
-    string category;
-    string description;
-
-    string priority;
-    string status;
-
-    int workerId;
-
-    string feedback;
-};
-
-// =====================================================
-// FILE NAMES
-// =====================================================
-
-const string STUDENT_FILE = "data/students.txt";
-const string COMPLAINT_FILE = "data/complaints.txt";
-
-// =====================================================
-// FUNCTION DECLARATIONS
-// =====================================================
-
-void registerStudent();
-void registerComplaint();
-void viewMyComplaints();
-void trackComplaintStatus();
-void viewComplaintHistory();
-void giveFeedback();
-
-bool findStudent(int id, Student &student);
-
-int generateComplaintId();
-
-vector<Complaint> loadComplaints();
-
-void saveComplaint(const Complaint &complaint);
-
-void updateComplaint(const Complaint &updated);
-
-// =====================================================
-// STUDENT MENU
-// =====================================================
-
-void studentMenu() {
+void StudentModule::studentMenu() {
     int choice;
 
     do {
@@ -89,7 +26,6 @@ void studentMenu() {
 
         if (cin.fail()) {
             cin.clear();
-            //clearInputBuffer();
             cout << "Invalid input. Please enter a number.\n";
             continue;
         }
