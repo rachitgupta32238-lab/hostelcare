@@ -2,6 +2,10 @@
 #include <limits>
 #include <string>
 
+#include"student.h"
+
+#include"warden.h"
+
 using namespace std;
 
 void clearInputBuffer() {
@@ -16,128 +20,8 @@ void printHeader() {
     cout << "============================================\n";
 }
 
-void studentMenu() {
-    int choice;
 
-    do {
-        cout << "\n========== STUDENT PORTAL ==========\n";
-        cout << "1. Register Complaint\n";
-        cout << "2. View My Complaints\n";
-        cout << "3. Track Complaint Status\n";
-        cout << "4. View Complaint History\n";
-        cout << "5. Give Feedback\n";
-        cout << "0. Back to Main Menu\n";
-        cout << "Enter your choice: ";
 
-        cin >> choice;
-
-        if (cin.fail()) {
-            cin.clear();
-            clearInputBuffer();
-            cout << "Invalid input. Please enter a number.\n";
-            continue;
-        }
-
-        switch (choice) {
-            case 1:
-                cout << "\n[Student] Complaint registration module coming soon.\n";
-                break;
-
-            case 2:
-                cout << "\n[Student] View complaints module coming soon.\n";
-                break;
-
-            case 3:
-                cout << "\n[Student] Complaint tracking module coming soon.\n";
-                break;
-
-            case 4:
-                cout << "\n[Student] Complaint history module coming soon.\n";
-                break;
-
-            case 5:
-                cout << "\n[Student] Feedback module coming soon.\n";
-                break;
-
-            case 0:
-                cout << "\nReturning to main menu...\n";
-                break;
-
-            default:
-                cout << "\nInvalid choice. Try again.\n";
-        }
-
-    } while (choice != 0);
-}
-
-void wardenMenu() {
-    int choice;
-
-    do {
-        cout << "\n========== WARDEN PORTAL ==========\n";
-        cout << "1. View Pending Complaints\n";
-        cout << "2. Verify Complaint\n";
-        cout << "3. Approve Complaint\n";
-        cout << "4. Reject Complaint\n";
-        cout << "5. Mark Duplicate Complaint\n";
-        cout << "6. Forward Complaint to Department\n";
-        cout << "7. Change Final Priority\n";
-        cout << "8. Generate Reports\n";
-        cout << "0. Back to Main Menu\n";
-        cout << "Enter your choice: ";
-
-        cin >> choice;
-
-        if (cin.fail()) {
-            cin.clear();
-            clearInputBuffer();
-            cout << "Invalid input. Please enter a number.\n";
-            continue;
-        }
-
-        switch (choice) {
-            case 1:
-                cout << "\n[Warden] Pending complaints module coming soon.\n";
-                break;
-
-            case 2:
-                cout << "\n[Warden] Complaint verification module coming soon.\n";
-                break;
-
-            case 3:
-                cout << "\n[Warden] Complaint approval module coming soon.\n";
-                break;
-
-            case 4:
-                cout << "\n[Warden] Complaint rejection module coming soon.\n";
-                break;
-
-            case 5:
-                cout << "\n[Warden] Duplicate detection module coming soon.\n";
-                break;
-
-            case 6:
-                cout << "\n[Warden] Department forwarding module coming soon.\n";
-                break;
-
-            case 7:
-                cout << "\n[Warden] Priority modification module coming soon.\n";
-                break;
-
-            case 8:
-                cout << "\n[Warden] Report generation module coming soon.\n";
-                break;
-
-            case 0:
-                cout << "\nReturning to main menu...\n";
-                break;
-
-            default:
-                cout << "\nInvalid choice. Try again.\n";
-        }
-
-    } while (choice != 0);
-}
 
 void workerMenu() {
     int choice;
@@ -213,6 +97,7 @@ void aboutProject() {
 
 int main() {
     int choice;
+    StudentModule student;
 
     printHeader();
 
@@ -236,7 +121,7 @@ int main() {
 
         switch (choice) {
             case 1:
-                studentMenu();
+                student.studentMenu();
                 break;
 
             case 2:
