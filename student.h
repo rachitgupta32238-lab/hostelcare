@@ -1,4 +1,4 @@
-#ifndef STUDENT_H
+#ifndef STUDENT_h
 #define STUDENT_H
 
 #include <iostream>
