@@ -6,7 +6,6 @@
 #include <limits>
 
 #include "warden.h"
-#include "viewPendingComplaints.h"
 using namespace std;
 
 
@@ -334,7 +333,74 @@ public:
     // 1. VIEW PENDING COMPLAINTS
     // =================================================
 
-    
+    void viewPendingComplaints()
+{
+    ifstream file("data/complaints.txt");
+
+    if (!file)
+    {
+        cout << "\nNo complaint file found.\n";
+        return;
+    }
+
+    string line;
+    bool found = false;
+
+    cout << "\n========== PENDING COMPLAINTS ==========\n";
+
+    while (getline(file, line))
+    {
+        if (line.empty())
+            continue;
+
+        stringstream ss(line);
+
+        string complaintId, studentId, studentName;
+        string roomNo, category, description;
+        string priority, status, workerId, feedback;
+
+        getline(ss, complaintId, '|');
+        getline(ss, studentId, '|');
+        getline(ss, studentName, '|');
+        getline(ss, roomNo, '|');
+        getline(ss, category, '|');
+        getline(ss, description, '|');
+        getline(ss, priority, '|');
+        getline(ss, status, '|');
+        getline(ss, workerId, '|');
+        getline(ss, feedback);
+
+        if (status == "Pending")
+        {
+            cout << "\n----------------------------------------\n";
+            cout << "Complaint ID : " << complaintId << endl;
+            cout << "Student ID   : " << studentId << endl;
+            cout << "Student Name : " << studentName << endl;
+            cout << "Room No      : " << roomNo << endl;
+            cout << "Category     : " << category << endl;
+            cout << "Description  : " << description << endl;
+            cout << "Priority     : " << priority << endl;
+            cout << "Status       : " << status << endl;
+
+            if (workerId == "-1")
+                cout << "Worker ID    : Not Assigned\n";
+            else
+                cout << "Worker ID    : " << workerId << endl;
+
+            if (!feedback.empty())
+                cout << "Feedback     : " << feedback << endl;
+
+            cout << "----------------------------------------\n";
+
+            found = true;
+        }
+    }
+
+    if (!found)
+        cout << "\nNo pending complaints found.\n";
+
+    file.close();
+}
 
 
     // =================================================
@@ -496,7 +562,7 @@ public:
 
         saveComplaints();
 
-        cout << "\nComplaint marked as duplicate.\n";
+        cout << "\nComplaint marked as Similar Complaint .\n";
     }
 
 
@@ -700,7 +766,7 @@ public:
             cout << "2. Verify Complaint\n";
             cout << "3. Approve Complaint\n";
             cout << "4. Reject Complaint\n";
-            cout << "5. Mark Duplicate Complaint\n";
+            cout << "5. Similar Complaint\n";
             cout << "6. Forward Complaint to Department\n";
             cout << "7. Change Final Priority\n";
             cout << "8. Generate Reports\n";
@@ -729,7 +795,7 @@ public:
             switch (choice)
             {
                 case 1:
-                    ::viewPendingComplaints();
+                    viewPendingComplaints();
                     break;
 
                 case 2:
