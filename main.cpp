@@ -1,9 +1,8 @@
 #include <iostream>
 #include <limits>
 #include <string>
-
+#include "colors.h"
 #include"student.h"
-
 #include"warden.h"
 
 using namespace std;
@@ -12,12 +11,15 @@ void clearInputBuffer() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-void printHeader() {
+void printHeader() 
+{
+    cout << CYAN << BOLD;
     cout << "\n";
     cout << "============================================\n";
     cout << "       HOSTELCARE SYSTEM\n";
     cout << " Smart Complaint and Maintenance Platform\n";
     cout << "============================================\n";
+    cout << RESET;
 }
 
 
