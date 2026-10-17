@@ -5,6 +5,7 @@
 #include <string>
 #include <limits>
 
+
 using namespace std;
 
 class StudentModule {
@@ -16,18 +17,20 @@ struct Student
     string name;
     string roomNo;
     string contact;
+    string hostelName;
 
     // Default constructor
     Student()
-        : studentId(0), name(""), roomNo(""), contact("")
+        : studentId(0), name(""), roomNo(""), contact(""), hostelName("")
     {
     }
 
     // Parameterized constructor
     Student(int id, const string& n,
-            const string& room, const string& phone)
+            const string& room, const string& phone, const string& hostel)
         : studentId(id), name(n),
-          roomNo(room), contact(phone)
+          roomNo(room), contact(phone),
+          hostelName(hostel)
     {
     }
 };
@@ -40,6 +43,7 @@ struct Complaint
     int studentId;
     string studentName;
     string roomNo;
+    string hostelName;
     string category;
     string description;
     string priority;
@@ -50,7 +54,7 @@ struct Complaint
     // Default constructor
     Complaint()
         : complaintId(0), studentId(0),
-          studentName(""), roomNo(""),
+          studentName(""), roomNo(""), hostelName(""),
           category(""), description(""),
           priority("Medium"), status("Pending"),
           workerId(-1), feedback("")
@@ -60,11 +64,13 @@ struct Complaint
     // Parameterized constructor
     Complaint(int cid, int sid,
               const string& sname, const string& room,
+              const string& hostel,
               const string& cat, const string& desc,
               const string& pr, const string& st,
               int wid, const string& fb)
         : complaintId(cid), studentId(sid),
           studentName(sname), roomNo(room),
+          hostelName(hostel),
           category(cat), description(desc),
           priority(pr), status(st),
           workerId(wid), feedback(fb)
