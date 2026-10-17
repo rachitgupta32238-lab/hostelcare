@@ -1,7 +1,8 @@
-#include <iostream>
-#include <limits>
-#include <string>
-#include "colors.h"
+#include<iostream>
+#include<limits>
+#include<string>
+
+#include"colors.h"
 #include"student.h"
 #include"warden.h"
 
@@ -90,11 +91,13 @@ void workerMenu() {
 }
 
 void aboutProject() {
+    cout << MAGENTA << BOLD;
     cout << "\n========== ABOUT HOSTELCARE ==========\n";
     cout << "HostelCare is a C++ and DSA-based hostel complaint system.\n";
     cout << "Students submit complaints for warden verification.\n";
     cout << "Approved complaints are sent to departments using priority queues.\n";
     cout << "Graphs and Dijkstra's algorithm help find the nearest suitable worker.\n";
+    cout << RESET;
 }
 
 int main() {
@@ -104,20 +107,22 @@ int main() {
     printHeader();
 
     do {
+        cout << BLUE << BOLD;
         cout << "\n========== MAIN MENU ==========\n";
         cout << "1. Student Portal\n";
         cout << "2. Warden Portal\n";
         cout << "3. Worker Portal\n";
         cout << "4. About Project\n";
         cout << "0. Exit\n";
-        cout << "Enter your choice: ";
+        cout << RESET;
+        cout << MAGENTA << "Enter your choice: " << RESET;
 
         cin >> choice;
 
         if (cin.fail()) {
             cin.clear();
             clearInputBuffer();
-            cout << "\nInvalid input. Please enter a number.\n";
+            cout << RED << "\nInvalid input. Please enter a number.\n" << RESET;
             continue;
         }
 
@@ -139,11 +144,11 @@ int main() {
                 break;
 
             case 0:
-                cout << "\nThank you for using HostelCare.\n";
+                cout << GREEN << "\nThank you for using HostelCare.\n" << RESET;
                 break;
 
             default:
-                cout << "\nInvalid choice. Try again.\n";
+                cout << RED << "\nInvalid choice. Try again.\n" << RESET;
         }
 
     } while (choice != 0);
