@@ -5,7 +5,12 @@
 #include <vector>
 #include <limits>
 
+#include "colors.h"
 #include "student.h"
+
+//total fields in student module
+/*complaintId|studentId|studentName|roomNo|hostelName|
+    category|description|priority|status|workerId|feedback*/
 
 using namespace std;
 
@@ -13,7 +18,7 @@ void StudentModule::studentMenu() {
     int choice;
 
     do {
-        
+        cout << BLUE << BOLD;
         cout << "\n========== STUDENT PORTAL ==========\n";
         cout << "1. Register Student\n";
         cout << "2. Register Complaint\n";
@@ -22,14 +27,15 @@ void StudentModule::studentMenu() {
         cout << "5. View Complaint History\n";
         cout << "6. Give Feedback\n";
         cout << "0. Back to Main Menu\n";
-        cout << "Enter your choice: ";
+        cout << RESET;
+        cout << MAGENTA << "Enter your choice: " << RESET;
 
 
         cin >> choice;
 
         if (cin.fail()) {
             cin.clear();
-            cout << "Invalid input. Please enter a number.\n";
+            cout << RED << "Invalid input. Please enter a number.\n" << RESET;
             continue;
         }
 
@@ -60,11 +66,11 @@ void StudentModule::studentMenu() {
                         break;
 
                     case 0:
-                        cout << "\nReturning to main menu...\n";
+                        cout << GREEN << "\nReturning to main menu...\n" << RESET;
                         break;
 
                     default:
-                        cout << "\nInvalid choice. Try again.\n";
+                        cout << RED << "\nInvalid choice. Try again.\n" << RESET;
                 }
     } while (choice != 0);
 }
@@ -78,6 +84,7 @@ void StudentModule::registerStudent()
 {
     Student s;
 
+    cout << CYAN << BOLD;
     cout << "\n========== STUDENT REGISTRATION ==========\n";
 
     cout << "Enter Student ID: ";
@@ -87,7 +94,7 @@ void StudentModule::registerStudent()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Student ID.\n";
+        cout << RED << "Invalid Student ID.\n" << RESET;
         return;
     }
 
@@ -96,7 +103,7 @@ void StudentModule::registerStudent()
 
     if (findStudent(s.studentId, existing))
     {
-        cout << "Student ID already registered.\n";
+        cout << YELLOW << "Student ID already registered.\n" << RESET;
         return;
     }
 
@@ -111,23 +118,28 @@ void StudentModule::registerStudent()
     cout << "Enter Contact Number: ";
     getline(cin, s.contact);
 
+    cout << "Enter hostel name: ";
+    getline(cin, s.hostelName);
+
     ofstream file(STUDENT_FILE, ios::app);
 
     if (!file)
     {
-        cout << "Unable to open student file.\n";
-        cout << "Ensure the data folder exists.\n";
+        cout << RED << "Unable to open student file.\n" << RESET;
+        cout << RED << "Ensure the data folder exists.\n" << RESET;
         return;
     }
 
     file << s.studentId << "|"
          << s.name << "|"
          << s.roomNo << "|"
-         << s.contact << "\n";
+         << s.contact << "|"
+         << s.hostelName << "\n";
 
     file.close();
 
-    cout << "\nStudent registered successfully!\n";
+    cout <<  GREEN << "\nStudent registered successfully!\n" << RESET;
+    cout << RESET;
 }
 
 
@@ -156,7 +168,8 @@ bool StudentModule::findStudent(int id, Student &student)
         getline(ss, studentId, '|');
         getline(ss, s.name, '|');
         getline(ss, s.roomNo, '|');
-        getline(ss, s.contact);
+        getline(ss, s.contact, '|');
+        getline(ss, s.hostelName, '|');
 
         try
         {
@@ -223,6 +236,7 @@ void StudentModule::registerComplaint()
     Student s;
     Complaint c;
 
+    cout << CYAN << BOLD;
     cout << "\n========== REGISTER COMPLAINT ==========\n";
 
     cout << "Enter Student ID: ";
@@ -232,20 +246,21 @@ void StudentModule::registerComplaint()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Student ID.\n";
+        cout << RED << "Invalid Student ID.\n" << RESET;
         return;
     }
 
     // Find registered student
     if (!findStudent(s.studentId, s))
     {
-        cout << "Student not registered. Please register first.\n";
+        cout << RED <<  "Student not registered. Please register first.\n" << RESET;
         return;
     }
 
     c.studentId = s.studentId;
     c.studentName = s.name;
     c.roomNo = s.roomNo;
+    c.hostelName = s.hostelName;
 
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -265,8 +280,8 @@ void StudentModule::registerComplaint()
 
     if (!file)
     {
-        cout << "Unable to open complaint file.\n";
-        cout << "Ensure the data folder exists.\n";
+        cout << RED << "Unable to open complaint file.\n" << RESET;
+        cout << RED << "Ensure the data folder exists.\n" << RESET;
         return;
     }
 
@@ -274,6 +289,7 @@ void StudentModule::registerComplaint()
          << c.studentId << "|"
          << c.studentName << "|"
          << c.roomNo << "|"
+         << c.hostelName << "|"
          << c.category << "|"
          << c.description << "|"
          << c.priority << "|"
@@ -283,9 +299,10 @@ void StudentModule::registerComplaint()
 
     file.close();
 
-    cout << "\nComplaint registered successfully!\n";
+    cout << GREEN << "\nComplaint registered successfully!\n" << RESET;
     cout << "Complaint ID: " << c.complaintId << "\n";
     cout << "Initial Status: " << c.status << "\n";
+    cout << RESET;
 }
 
 
@@ -294,6 +311,7 @@ void StudentModule::viewMyComplaints()
 {
     int id;
 
+    cout << CYAN << BOLD;
     cout << "\n========== MY COMPLAINTS ==========\n";
     cout << "Enter Student ID: ";
     cin >> id;
@@ -302,7 +320,7 @@ void StudentModule::viewMyComplaints()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Student ID.\n";
+        cout << RED << "Invalid Student ID.\n" << RESET;
         return;
     }
 
@@ -310,7 +328,7 @@ void StudentModule::viewMyComplaints()
 
     if (!findStudent(id, s))
     {
-        cout << "Student not registered.\n";
+        cout << RED << "Student not registered.\n" << RESET;
         return;
     }
 
@@ -318,7 +336,7 @@ void StudentModule::viewMyComplaints()
 
     if (!file)
     {
-        cout << "Unable to open complaint file.\n";
+        cout << RED << "Unable to open complaint file.\n" << RESET ;
         return;
     }
 
@@ -331,9 +349,9 @@ void StudentModule::viewMyComplaints()
             continue;
 
         stringstream ss(line);
-        string fields[10];
+        string fields[11];
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
             getline(ss, fields[i], '|');
 
         try
@@ -348,19 +366,24 @@ void StudentModule::viewMyComplaints()
 
         found = true;
 
+        cout << YELLOW << BOLD;
         cout << "\nComplaint ID : " << fields[0] << '\n';
-        cout << "Category     : " << fields[4] << '\n';
-        cout << "Description  : " << fields[5] << '\n';
-        cout << "Priority     : " << fields[6] << '\n';
-        cout << "Status       : " << fields[7] << '\n';
-        cout << "Worker ID    : " << fields[8] << '\n';
+        cout << "Category     : " << fields[5] << '\n';
+        cout << "Description  : " << fields[6] << '\n';
+        cout << "Priority     : " << fields[7] << '\n';
+        cout << "Status       : " << fields[8] << '\n';
+        cout << "Worker ID    : " << fields[9] << '\n';
         cout << "-------------------------------\n";
+        cout << RESET;
+
     }
 
     file.close();
 
     if (!found)
-        cout << "No complaints found for this student.\n";
+        cout << RED << "No complaints found for this student.\n" << RESET;
+    
+    cout << RESET;
 }
 
 
@@ -370,6 +393,7 @@ void StudentModule::trackComplaintStatus()
 {
     int studentId, complaintId;
 
+    cout << CYAN << BOLD;
     cout << "\n========== TRACK COMPLAINT ==========\n";
 
     cout << "Enter Student ID: ";
@@ -379,7 +403,7 @@ void StudentModule::trackComplaintStatus()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Student ID.\n";
+        cout << RED << "Invalid Student ID.\n" << RESET;
         return;
     }
 
@@ -388,7 +412,7 @@ void StudentModule::trackComplaintStatus()
 
     if (!findStudent(studentId, s))
     {
-        cout << "Student not registered.\n";
+        cout << RED << "Student not registered.\n" << RESET;
         return;
     }
 
@@ -399,7 +423,7 @@ void StudentModule::trackComplaintStatus()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Complaint ID.\n";
+        cout << RED << "Invalid Complaint ID.\n" << RESET;
         return;
     }
 
@@ -407,7 +431,7 @@ void StudentModule::trackComplaintStatus()
 
     if (!file)
     {
-        cout << "Unable to open complaint file.\n";
+        cout << RED << "Unable to open complaint file.\n" << RESET;
         return;
     }
 
@@ -420,9 +444,9 @@ void StudentModule::trackComplaintStatus()
             continue;
 
         stringstream ss(line);
-        string fields[10];
+        string fields[11];
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
             getline(ss, fields[i], '|');
 
         try
@@ -442,18 +466,20 @@ void StudentModule::trackComplaintStatus()
             continue;
         }
 
+        cout << BLUE << BOLD;
         cout << "\nComplaint ID  : " << fields[0] << '\n';
-        cout << "Category      : " << fields[4] << '\n';
-        cout << "Description   : " << fields[5] << '\n';
-        cout << "Priority      : " << fields[6] << '\n';
-        cout << "Current Status: " << fields[7] << '\n';
+        cout << "Category      : " << fields[5] << '\n';
+        cout << "Description   : " << fields[6] << '\n';
+        cout << "Priority      : " << fields[7] << '\n';
+        cout << "Current Status: " << fields[8] << '\n';
 
-        if (fields[8] == "-1")
+        if (fields[9] == "-1")
             cout << "Worker        : Not assigned yet\n";
         else
-            cout << "Worker ID     : " << fields[8] << '\n';
+            cout << "Worker ID     : " << fields[9] << '\n';
 
         found = true;
+        cout << RESET;
         break;
     }
 
@@ -461,8 +487,10 @@ void StudentModule::trackComplaintStatus()
 
     if (!found)
     {
-        cout << "Complaint not found for this Student ID.\n";
+        cout << RED << "Complaint not found for this Student ID.\n" << RESET;
     }
+
+    cout << RESET;
 }
 
 
@@ -471,6 +499,7 @@ void StudentModule::viewComplaintHistory()
 {
     int studentId;
 
+    cout << CYAN << BOLD;
     cout << "\n========== COMPLAINT HISTORY ==========\n";
     cout << "Enter Student ID: ";
     cin >> studentId;
@@ -479,7 +508,7 @@ void StudentModule::viewComplaintHistory()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Student ID.\n";
+        cout << RED << "Invalid Student ID.\n" << RESET;
         return;
     }
 
@@ -487,7 +516,7 @@ void StudentModule::viewComplaintHistory()
 
     if (!findStudent(studentId, s))
     {
-        cout << "Student not registered.\n";
+        cout << RED << "Student not registered.\n" << RESET;
         return;
     }
 
@@ -495,14 +524,14 @@ void StudentModule::viewComplaintHistory()
 
     if (!file)
     {
-        cout << "Unable to open complaint file.\n";
+        cout << RED << "Unable to open complaint file.\n" << RESET;
         return;
     }
 
     string line;
     bool found = false;
 
-    cout << "\nStudent: " << s.name << '\n';
+    cout << YELLOW << "\nStudent: " << s.name << '\n' << RESET;
 
     while (getline(file, line))
     {
@@ -510,9 +539,9 @@ void StudentModule::viewComplaintHistory()
             continue;
 
         stringstream ss(line);
-        string fields[10];
+        string fields[11];
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
             getline(ss, fields[i], '|');
 
         try
@@ -526,25 +555,28 @@ void StudentModule::viewComplaintHistory()
         }
 
         found = true;
-
+        cout << BLUE << BOLD;
         cout << "\nComplaint ID : " << fields[0] << '\n';
-        cout << "Category     : " << fields[4] << '\n';
-        cout << "Description  : " << fields[5] << '\n';
-        cout << "Priority     : " << fields[6] << '\n';
-        cout << "Status       : " << fields[7] << '\n';
+        cout << "Category     : " << fields[5] << '\n';
+        cout << "Description  : " << fields[6] << '\n';
+        cout << "Priority     : " << fields[7] << '\n';
+        cout << "Status       : " << fields[8] << '\n';
 
-        if (fields[8] == "-1")
+        if (fields[9] == "-1")
             cout << "Worker       : Not assigned\n";
         else
-            cout << "Worker ID    : " << fields[8] << '\n';
+            cout << "Worker ID    : " << fields[9] << '\n';
 
         cout << "-------------------------------\n";
+        cout << RESET;
     }
 
     file.close();
 
     if (!found)
-        cout << "No complaint history found.\n";
+        cout << RED << "No complaint history found.\n" << RESET;
+
+    cout << RESET;
 }
 
 
@@ -553,6 +585,7 @@ void StudentModule::giveFeedback()
 {
     int studentId, complaintId;
 
+    cout << CYAN << BOLD;
     cout << "\n========== GIVE FEEDBACK ==========\n";
 
     cout << "Enter Student ID: ";
@@ -562,7 +595,7 @@ void StudentModule::giveFeedback()
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid Student ID.\n";
+        cout << RED << "Invalid Student ID.\n" << RESET;
         return;
     }
 
@@ -570,7 +603,7 @@ void StudentModule::giveFeedback()
 
     if (!findStudent(studentId, s))
     {
-        cout << "Student not registered.\n";
+        cout << RED << "Student not registered.\n" << RESET;
         return;
     }
 
@@ -590,7 +623,7 @@ void StudentModule::giveFeedback()
 
     if (!file)
     {
-        cout << "Unable to open complaint file.\n";
+        cout << RED << "Unable to open complaint file.\n" << RESET;
         return;
     }
 
@@ -602,9 +635,9 @@ void StudentModule::giveFeedback()
     while (getline(file, line) && count < 1000)
     {
         stringstream ss(line);
-        string fields[10];
+        string fields[11];
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
             getline(ss, fields[i], '|');
 
         try
@@ -612,16 +645,16 @@ void StudentModule::giveFeedback()
             if (stoi(fields[0]) == complaintId &&
                 stoi(fields[1]) == studentId)
             {
-                if (fields[7] != "Resolved")
+                if (fields[8] != "Resolved")
                 {
-                    cout << "Feedback is allowed only for resolved complaints.\n";
+                    cout << YELLOW << "Feedback is allowed only for resolved complaints.\n" << RESET;
                     file.close();
                     return;
                 }
 
-                if (!fields[9].empty())
+                if (!fields[10].empty())
                 {
-                    cout << "Feedback has already been submitted.\n";
+                    cout << GREEN << "Feedback has already been submitted.\n" << RESET;
                     file.close();
                     return;
                 }
@@ -641,7 +674,7 @@ void StudentModule::giveFeedback()
 
     if (targetIndex == -1)
     {
-        cout << "Complaint not found for this Student ID.\n";
+        cout << YELLOW << "Complaint not found for this Student ID.\n" << RESET;
         return;
     }
 
@@ -653,20 +686,20 @@ void StudentModule::giveFeedback()
 
     if (feedback.empty() || feedback.find('|') != string::npos)
     {
-        cout << "Feedback cannot be empty or contain '|'.\n";
+        cout << RED << "Feedback cannot be empty or contain '|'.\n" << RESET;
         return;
     }
 
     stringstream ss(lines[targetIndex]);
-    string fields[10];
+    string fields[11];
 
-    for (int i = 0; i < 9; i++)
+    for (int i = 0; i < 11; i++)
         getline(ss, fields[i], '|');
 
-    fields[9] = feedback;
+    fields[10] = feedback;
 
     stringstream updated;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 11; i++)
     {
         if (i > 0)
             updated << '|';
@@ -679,7 +712,7 @@ void StudentModule::giveFeedback()
 
     if (!out)
     {
-        cout << "Unable to save feedback.\n";
+        cout << RED << "Unable to save feedback.\n" << RESET;
         return;
     }
 
@@ -688,5 +721,7 @@ void StudentModule::giveFeedback()
 
     out.close();
 
-    cout << "Feedback submitted successfully!\n";
+    cout << GREEN << "Feedback submitted successfully!\n" << RESET;
+
+    cout << RESET;
 }
