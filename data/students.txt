@@ -1,2 +1,5 @@
-101|Priyanshu Ranjan|405|6202130789
-102|ram|408|4561237890
+101|priyanshu ranjan|405|1234567890|sardar bhagat singh
+102|rachit gupta|604|9876543210|atlantis
+103|aryan vatsal|302|1597534862|sardar bhagat singh
+104|adarsh kumar|504|1472583690|sardar bhagat singh
+105|lakshya tyagi|202|3692581470|netaji subhash chandra bose
