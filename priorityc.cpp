@@ -1,256 +1,223 @@
 #include "priority.h"
 
 #include <cctype>
-#include <cstdio>
 #include <fstream>
+#include <initializer_list>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-using namespace std;
-
 namespace
 {
-    const string STUDENT_FILE = "data/students.txt";
-    const string COMPLAINT_FILE = "data/complaints.txt";
-    const string TEMP_FILE = "data/complaints.tmp";
-
-    struct StudentRecord
-    {
-        string id;
-        string name;
-        string roomNo;
-        string contact;
-        string hostelName;
-    };
-
-    struct ComplaintRecord
-    {
-        string complaintId;
-        string studentId;
-        string studentName;
-        string roomNo;
-        string hostelName;
-        string category;
-        string description;
-        string priority;
-        string status;
-        string workerId;
-        string feedback;
-    };
-
-    string lowercase(string text)
-    {
-        for (char& ch : text)
-            ch = static_cast<char>(
-                tolower(static_cast<unsigned char>(ch))
-            );
-
-        return text;
-    }
-
-    bool loadStudents(unordered_map<string, StudentRecord>& students)
-    {
-        ifstream file(STUDENT_FILE);
-
-        if (!file)
-        {
-            cerr << "Could not open " << STUDENT_FILE << '\n';
-            return false;
-        }
-
-        string line;
-
-        while (getline(file, line))
-        {
-            if (line.empty())
-                continue;
-
-            stringstream ss(line);
-            StudentRecord student;
-
-            if (!getline(ss, student.id, '|') ||
-                !getline(ss, student.name, '|') ||
-                !getline(ss, student.roomNo, '|') ||
-                !getline(ss, student.contact, '|') ||
-                !getline(ss, student.hostelName))
-            {
-                cerr << "Invalid student record. No complaints were changed.\n";
-                return false;
-            }
-
-            students[student.id] = student;
-        }
-
-        return true;
-    }
-
-    bool parseComplaint(const string& line, ComplaintRecord& c)
-    {
-        stringstream ss(line);
-
-        return
-            static_cast<bool>(getline(ss, c.complaintId, '|')) &&
-            static_cast<bool>(getline(ss, c.studentId, '|')) &&
-            static_cast<bool>(getline(ss, c.studentName, '|')) &&
-            static_cast<bool>(getline(ss, c.roomNo, '|')) &&
-            static_cast<bool>(getline(ss, c.hostelName, '|')) &&
-            static_cast<bool>(getline(ss, c.category, '|')) &&
-            static_cast<bool>(getline(ss, c.description, '|')) &&
-            static_cast<bool>(getline(ss, c.priority, '|')) &&
-            static_cast<bool>(getline(ss, c.status, '|')) &&
-            static_cast<bool>(getline(ss, c.workerId, '|')) &&
-            static_cast<bool>(getline(ss, c.feedback));
-    }
-
-    string calculatePriority(const string& category, const string& description)
-    {
-        string text = lowercase(category + " " + description);
-
-        // Immediate safety issues
-        if (text.find("fire") != string::npos ||
-            text.find("smoke") != string::npos ||
-            text.find("gas leak") != string::npos ||
-            text.find("electric shock") != string::npos ||
-            text.find("sparks") != string::npos)
-        {
-            return "P1";
-        }
-
-        // Urgent repairs or security issues
-        if (text.find("flood") != string::npos ||
-            text.find("pipe burst") != string::npos ||
-            text.find("power failure") != string::npos ||
-            text.find("no electricity") != string::npos ||
-            text.find("lock") != string::npos ||
-            text.find("security") != string::npos ||
-            text.find("plumbing") != string::npos ||
-            text.find("water leak") != string::npos)
-        {
-            return "P2";
-        }
-
-        // Routine repairs
-        if (text.find("fan") != string::npos ||
-            text.find("light") != string::npos ||
-            text.find("bulb") != string::npos ||
-            text.find("furniture") != string::npos ||
-            text.find("chair") != string::npos ||
-            text.find("table") != string::npos ||
-            text.find("bed") != string::npos)
-        {
-            return "P3";
-        }
-
-        // Other or routine maintenance
-        return "P4";
-    }
-
-    bool saveComplaints(const vector<ComplaintRecord>& complaints)
-    {
-        ofstream file(TEMP_FILE);
-
-        if (!file)
-        {
-            cerr << "Could not create temporary complaint file.\n";
-            return false;
-        }
-
-        for (const ComplaintRecord& c : complaints)
-        {
-            file << c.complaintId << '|'
-                 << c.studentId << '|'
-                 << c.studentName << '|'
-                 << c.roomNo << '|'
-                 << c.hostelName << '|'
-                 << c.category << '|'
-                 << c.description << '|'
-                 << c.priority << '|'
-                 << c.status << '|'
-                 << c.workerId << '|'
-                 << c.feedback << '\n';
-        }
-
-        file.close();
-
-        if (!file)
-        {
-            cerr << "Failed while writing the temporary complaint file.\n";
-            return false;
-        }
-
-        // Replace the original file after the complete output is ready.
-        if (remove(COMPLAINT_FILE.c_str()) != 0)
-        {
-            cerr << "Could not replace the original complaint file. "
-                 << "Updated records are in " << TEMP_FILE << '\n';
-            return false;
-        }
-
-        if (rename(TEMP_FILE.c_str(), COMPLAINT_FILE.c_str()) != 0)
-        {
-            cerr << "Could not rename the updated file. "
-                 << "Updated records are in " << TEMP_FILE << '\n';
-            return false;
-        }
-
-        return true;
-    }
+std::string lowercase(std::string text)
+{
+    for (char& ch : text)
+        ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+    return text;
 }
 
-void updatePrioritiesFromFiles()
+bool containsAny(const std::string& text,
+                 std::initializer_list<const char*> keywords)
 {
-    unordered_map<string, StudentRecord> students;
+    for (const char* keyword : keywords)
+        if (text.find(keyword) != std::string::npos)
+            return true;
+    return false;
+}
 
-    if (!loadStudents(students))
-        return;
+struct StudentRecord
+{
+    std::string id;
+    std::string name;
+    std::string room;
+    std::string contact;
+    std::string hostel;
+};
 
-    ifstream file(COMPLAINT_FILE);
+struct ComplaintRecord
+{
+    std::string id;
+    std::string studentId;
+    std::string studentName;
+    std::string room;
+    std::string hostel;
+    std::string category;
+    std::string description;
+    std::string priority;
+    std::string status;
+    std::string workerId;
+    std::string feedback;
+};
+}
 
-    if (!file)
+std::string normalizeComplaintCategory(const std::string& category,
+                                       const std::string& description)
+{
+    const std::string text = lowercase(category + " " + description);
+
+    if (containsAny(text, {"chair", "table", "bed", "desk", "cupboard",
+                           "shelf", "furniture", "carpentry", "wood"}))
+        return "Furniture / Carpentry";
+
+    if (containsAny(text, {"fire", "smoke", "gas leak", "electric shock",
+                           "sparks", "wire", "wiring", "fan", "light",
+                           "bulb", "switch", "socket", "electricity",
+                           "electrical", "power"}))
+        return "Electrical";
+
+    if (containsAny(text, {"tap", "pipe", "leak", "toilet", "drain",
+                           "plumbing", "water", "flood"}))
+        return "Plumbing";
+
+    if (containsAny(text, {"lock", "door", "gate", "security"}))
+        return "Security / Locks";
+
+    if (containsAny(text, {"clean", "dirty", "garbage", "dustbin",
+                           "sanitation", "hygiene"}))
+        return "Cleaning / Sanitation";
+
+    if (containsAny(text, {"paint", "wall", "ceiling", "floor", "crack",
+                           "masonry", "civil"}))
+        return "Building / Civil";
+
+    return "General Maintenance";
+}
+
+std::string assignComplaintPriority(const std::string& category,
+                                    const std::string& description)
+{
+    const std::string text = lowercase(category + " " + description);
+
+    if (containsAny(text, {"fire", "smoke", "gas leak", "gas leakage",
+                           "electric shock", "sparks", "exposed wire"}))
+        return "Critical";
+
+    if (containsAny(text, {"flood", "pipe burst", "major water leak",
+                           "power failure", "no electricity", "security gate",
+                           "gate broken", "lock broken"}))
+        return "High";
+
+    if (containsAny(text, {"fan", "light", "bulb", "tap", "pipe", "leak",
+                           "toilet", "drain", "lock", "door", "chair",
+                           "table", "bed", "desk", "cupboard", "shelf",
+                           "furniture", "carpentry", "paint", "wall",
+                           "ceiling", "floor", "broken", "repair", "wire",
+                           "wiring", "switch", "socket", "electrical"}))
+        return "Medium";
+
+    return "Low";
+}
+
+void updateComplaintPrioritiesFromFiles()
+{
+    const char* studentPath = "data/students.txt";
+    const char* complaintPath = "data/complaints.txt";
+
+    std::unordered_map<std::string, StudentRecord> students;
     {
-        cerr << "Could not open " << COMPLAINT_FILE << '\n';
-        return;
-    }
-
-    vector<ComplaintRecord> complaints;
-    string line;
-
-    while (getline(file, line))
-    {
-        if (line.empty())
-            continue;
-
-        ComplaintRecord complaint;
-
-        if (!parseComplaint(line, complaint))
+        std::ifstream studentFile(studentPath);
+        if (!studentFile)
         {
-            cerr << "Invalid complaint record. No complaints were changed.\n";
+            std::cerr << "Unable to open " << studentPath << ".\n";
             return;
         }
 
-        // Refresh student details from students.txt when the ID exists.
-        auto student = students.find(complaint.studentId);
-        if (student != students.end())
+        std::string line;
+        while (std::getline(studentFile, line))
         {
-            complaint.studentName = student->second.name;
-            complaint.roomNo = student->second.roomNo;
-            complaint.hostelName = student->second.hostelName;
+            if (line.empty()) continue;
+            std::stringstream row(line);
+            StudentRecord student;
+            if (!std::getline(row, student.id, '|') ||
+                !std::getline(row, student.name, '|') ||
+                !std::getline(row, student.room, '|') ||
+                !std::getline(row, student.contact, '|') ||
+                !std::getline(row, student.hostel))
+            {
+                std::cerr << "Invalid student record; priorities were not updated.\n";
+                return;
+            }
+            students[student.id] = student;
         }
-
-        complaint.priority =
-            calculatePriority(complaint.category, complaint.description);
-
-        cout << "Complaint " << complaint.complaintId
-             << " assigned " << complaint.priority << '\n';
-
-        complaints.push_back(complaint);
     }
 
-    file.close();
+    std::vector<ComplaintRecord> complaints;
+    {
+        std::ifstream complaintFile(complaintPath);
+        if (!complaintFile)
+        {
+            std::cerr << "Unable to open " << complaintPath << ".\n";
+            return;
+        }
 
-    if (saveComplaints(complaints))
-        cout << "Complaint priorities updated successfully.\n";
+        std::string line;
+        while (std::getline(complaintFile, line))
+        {
+            if (line.empty()) continue;
+            std::stringstream row(line);
+            ComplaintRecord c;
+            if (!std::getline(row, c.id, '|') ||
+                !std::getline(row, c.studentId, '|') ||
+                !std::getline(row, c.studentName, '|') ||
+                !std::getline(row, c.room, '|') ||
+                !std::getline(row, c.hostel, '|') ||
+                !std::getline(row, c.category, '|') ||
+                !std::getline(row, c.description, '|') ||
+                !std::getline(row, c.priority, '|') ||
+                !std::getline(row, c.status, '|') ||
+                !std::getline(row, c.workerId, '|'))
+            {
+                std::cerr << "Invalid complaint record; priorities were not updated.\n";
+                return;
+            }
+            // Feedback may legitimately be empty, leaving the line ending
+            // immediately after the final '|'.
+            std::getline(row, c.feedback);
+
+            const auto student = students.find(c.studentId);
+            if (student != students.end())
+            {
+                c.studentName = student->second.name;
+                c.room = student->second.room;
+                c.hostel = student->second.hostel;
+            }
+            c.category = normalizeComplaintCategory(c.category, c.description);
+            c.priority = assignComplaintPriority(c.category, c.description);
+            complaints.push_back(c);
+        }
+    }
+
+    // Rewrite the existing file only; no sidecar or temporary data file is made.
+    std::ofstream complaintFile(complaintPath, std::ios::trunc);
+    if (!complaintFile)
+    {
+        std::cerr << "Unable to update " << complaintPath << ".\n";
+        return;
+    }
+
+    for (const ComplaintRecord& c : complaints)
+    {
+        complaintFile << c.id << '|' << c.studentId << '|' << c.studentName << '|'
+                      << c.room << '|' << c.hostel << '|' << c.category << '|'
+                      << c.description << '|' << c.priority << '|' << c.status << '|'
+                      << c.workerId << '|' << c.feedback << '\n';
+    }
+
+    if (!complaintFile)
+    {
+        std::cerr << "Error while updating complaint data.\n";
+        return;
+    }
+    std::cout << "Automatically assigned priorities to " << complaints.size()
+              << " complaint(s).\n";
 }
+
+#ifdef PRIORITY_STANDALONE
+int main()
+{
+    updateComplaintPrioritiesFromFiles();
+    return 0;
+}
+#endif
