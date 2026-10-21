@@ -114,7 +114,6 @@ int main() {
         cout << "2. Warden Portal\n";
         cout << "3. Worker Portal\n";
         cout << "4. About Project\n";
-        cout << "5. Recalculate Complaint Priorities\n";
         cout << "0. Exit\n";
         cout << RESET;
         cout << MAGENTA << "Enter your choice: " << RESET;
@@ -143,9 +142,6 @@ int main() {
 
             case 4:
                 aboutProject();
-                break;
-            case 5:
-                updateComplaintPriorities();
                 break;
 
             case 0:
