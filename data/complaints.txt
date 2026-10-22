@@ -1,1 +1,2 @@
-1|101|priyanshu ranjan|405|sardar bhagat singh|electrical|fan not working|Medium|Pending|-1|
+1|101|priyanshu ranjan|405|sardar bhagat singh|electrical|fan not working|High|Escalated|E101|Escalated by E101: i have not a idea how to resolve
+2|25100|rachit|04|atlantis|electrical|fan not working|Medium|Resolved|E101|Worker E101: replace the fan
