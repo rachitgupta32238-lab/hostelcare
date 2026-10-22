@@ -1,11 +1,12 @@
-#include<iostream>
-#include<limits>
-#include<string>
+#include <iostream>
+#include <limits>
+#include <string>
 
-#include"colors.h"
-#include"student.h"
-#include"warden.h"
-#include"priority.h"
+#include "colors.h"
+#include "student.h"
+#include "warden.h"
+#include "workerportal.h"
+#include "campusgraph.h"
 
 using namespace std;
 
@@ -13,8 +14,7 @@ void clearInputBuffer() {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-void printHeader() 
-{
+void printHeader() {
     cout << CYAN << BOLD;
     cout << "\n";
     cout << "============================================\n";
@@ -24,86 +24,25 @@ void printHeader()
     cout << RESET;
 }
 
-
-
-
-void workerMenu() {
-    int choice;
-
-    do {
-        cout << "\n========== WORKER PORTAL ==========\n";
-        cout << "1. View Assigned Tasks\n";
-        cout << "2. View Next Priority Task\n";
-        cout << "3. Accept Task\n";
-        cout << "4. Mark Task In Progress\n";
-        cout << "5. Mark Task Resolved\n";
-        cout << "6. Escalate Task\n";
-        cout << "7. View Shortest Route to Complaint\n";
-        cout << "0. Back to Main Menu\n";
-        cout << "Enter your choice: ";
-
-        cin >> choice;
-
-        if (cin.fail()) {
-            cin.clear();
-            clearInputBuffer();
-            cout << "Invalid input. Please enter a number.\n";
-            continue;
-        }
-
-        switch (choice) {
-            case 1:
-                cout << "\n[Worker] Assigned tasks module coming soon.\n";
-                break;
-
-            case 2:
-                cout << "\n[Worker] Priority queue module coming soon.\n";
-                break;
-
-            case 3:
-                cout << "\n[Worker] Task acceptance module coming soon.\n";
-                break;
-
-            case 4:
-                cout << "\n[Worker] Work status module coming soon.\n";
-                break;
-
-            case 5:
-                cout << "\n[Worker] Task resolution module coming soon.\n";
-                break;
-
-            case 6:
-                cout << "\n[Worker] Task escalation module coming soon.\n";
-                break;
-
-            case 7:
-                cout << "\n[Worker] Dijkstra shortest-route module coming soon.\n";
-                break;
-
-            case 0:
-                cout << "\nReturning to main menu...\n";
-                break;
-
-            default:
-                cout << "\nInvalid choice. Try again.\n";
-        }
-
-    } while (choice != 0);
-}
-
 void aboutProject() {
     cout << MAGENTA << BOLD;
     cout << "\n========== ABOUT HOSTELCARE ==========\n";
     cout << "HostelCare is a C++ and DSA-based hostel complaint system.\n";
     cout << "Students submit complaints for warden verification.\n";
-    cout << "Approved complaints are sent to departments using priority queues.\n";
-    cout << "Graphs and Dijkstra's algorithm help find the nearest suitable worker.\n";
+    cout << "Approved complaints are sent to departments using priority handling.\n";
+    cout << "Graphs and Dijkstra's algorithm help find suitable worker routes.\n";
     cout << RESET;
 }
 
 int main() {
-    int choice;
+    int choice = -1;
     StudentModule student;
+
+    CampusGraph graph;
+    graph.loadDefaultCampusMap();
+
+    // Worker accounts and dispatch setup are encapsulated inside WorkerPortal.
+    WorkerPortal workerPortal(graph);
 
     printHeader();
 
@@ -118,12 +57,11 @@ int main() {
         cout << RESET;
         cout << MAGENTA << "Enter your choice: " << RESET;
 
-        cin >> choice;
-
-        if (cin.fail()) {
+        if (!(cin >> choice)) {
             cin.clear();
             clearInputBuffer();
             cout << RED << "\nInvalid input. Please enter a number.\n" << RESET;
+            choice = -1;
             continue;
         }
 
@@ -131,27 +69,21 @@ int main() {
             case 1:
                 student.studentMenu();
                 break;
-
             case 2:
                 wardenMenu();
                 break;
-
             case 3:
-                workerMenu();
+                workerPortal.run();
                 break;
-
             case 4:
                 aboutProject();
                 break;
-
             case 0:
                 cout << GREEN << "\nThank you for using HostelCare.\n" << RESET;
                 break;
-
             default:
-                cout << RED << "\nInvalid choice. Try again.\n" << RESET;
+                cout << RED << "Invalid choice. Try again.\n" << RESET;
         }
-
     } while (choice != 0);
 
     return 0;
