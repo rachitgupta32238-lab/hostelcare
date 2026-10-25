@@ -32,7 +32,7 @@ void Complaint::display() const
     cout << "Priority     : " << getPriority() << endl;
     cout << "Status       : " << getStatus() << endl;
     cout << RESET;
-    if (getWorkerId() == -1)
+    if (getWorkerId() == "-1" || getWorkerId().empty())
         cout <<RED<< "Worker ID    : Not Assigned\n" << RESET;
     else
         cout << CYAN << BOLD<<  "Worker ID    : " << getWorkerId() << endl;
@@ -103,7 +103,7 @@ void Warden::loadComplaints()
                 description,
                 priority,
                 status,
-                stoi(workerId),
+                workerId,
                 feedback
             );
 
