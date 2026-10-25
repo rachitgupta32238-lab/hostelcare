@@ -32,7 +32,7 @@ private:
     string priority;
     string status;
 
-    int workerId;
+    string workerId;
     string feedback;
 
 public:
@@ -43,7 +43,7 @@ public:
     {
         complaintId = 0;
         studentId = 0;
-        workerId = -1;
+        workerId = "-1";
     }
 
 
@@ -59,7 +59,7 @@ public:
         string desc,
         string pri,
         string stat,
-        int wid,
+        string wid,
         string feed
     )
     {
@@ -124,7 +124,7 @@ public:
         return status;
     }
 
-    int getWorkerId() const
+    string getWorkerId() const
     {
         return workerId;
     }
@@ -147,7 +147,7 @@ public:
         priority = newPriority;
     }
 
-    void setWorkerId(int newWorkerId)
+    void setWorkerId(string newWorkerId)
     {
         workerId = newWorkerId;
     }
