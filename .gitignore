@@ -1,0 +1,9 @@
+node_modules/
+frontend/dist/
+backend/build*/
+.env
+# Real student data must never be committed (privacy). Use backend/demo-data for samples.
+backend/data/
+*.db
+*.db-journal
+backups/

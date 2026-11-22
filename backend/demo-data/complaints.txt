@@ -1,0 +1,5 @@
+1|S2001|Ananya Rao|A-104|Atlantis Hostel|Electrical|Ceiling fan makes a loud noise and wobbles|Medium|Resolved|E101|Tightened the mounting and balanced the blades|Noisy ceiling fan
+2|S2002|Kabir Mehta|B-210|SC Bose Hostel|Plumbing|Bathroom tap leaking continuously|Medium|In Progress|P101||Leaking bathroom tap
+3|S2003|Ishita Negi|C-018|Bhagat Singh Hostel|Internet|Wi-Fi drops every few minutes in the evening|Medium|Assigned|IT101||Unstable Wi-Fi
+4|S2004|Arjun Bisht|D-305|Sardar Patel Hostel|Furniture|Study chair leg is broken|Low|Pending|-1||Broken chair
+5|S2001|Ananya Rao|A-104|Atlantis Hostel|Cleaning|Corridor dustbin not emptied for two days|Low|Verified|-1||Corridor dustbin full

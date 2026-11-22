@@ -1,0 +1,33 @@
+# HostelCare production stack:  docker compose up -d --build
+# Settings come from the .env file next to this one (copy .env.example).
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - hostelcare-data:/data
+    expose:
+      - "18080"          # reachable only by the web container, not the internet
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_GOOGLE_MAPS_EMBED_KEY: ${GOOGLE_MAPS_EMBED_KEY:-}
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-http://localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy-data:/data   # HTTPS certificates
+      - caddy-config:/config
+    depends_on:
+      - backend
+
+volumes:
+  hostelcare-data:
+  caddy-data:
+  caddy-config:

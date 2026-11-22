@@ -1,0 +1,43 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install libraries
+        run: sudo apt-get update && sudo apt-get install -y libasio-dev libssl-dev libsqlite3-dev libcurl4-openssl-dev
+      - name: Configure
+        run: cmake -S backend -B backend/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build backend/build -j4
+      - name: API tests
+        working-directory: backend
+        run: ./build/hostelcare_tests tests/fixtures
+
+  frontend:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+  docker:
+    runs-on: ubuntu-24.04
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build images
+        run: |
+          docker build -t hostelcare-backend backend
+          docker build -t hostelcare-web frontend

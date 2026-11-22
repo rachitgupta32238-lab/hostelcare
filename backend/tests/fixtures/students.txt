@@ -1,0 +1,11 @@
+101|Student 101|405|9000000001|sardar bhagat singh
+102|Student 102|604|9000000002|atlantis
+103|Student 103|302|9000000003|sardar bhagat singh
+104|Student 104|504|9000000004|sardar bhagat singh
+105|Student 105|202|9000000005|netaji subhash chandra bose
+25100|Student 25100|04|9000000006|atlantis
+25101|Student 25101|2|9000000007|atlantis
+123|Student 123|12|9000000008|sc bose
+9999|Student 9999|101|9000000009|Test Hostel
+8888|Student 8888|g18|9000000010|Atlantis
+2000|Student 2000|G04(c)|9000000011|Atlantis Hostel

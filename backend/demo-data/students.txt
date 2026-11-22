@@ -1,0 +1,4 @@
+S2001|Ananya Rao|A-104|9000100001|Atlantis Hostel
+S2002|Kabir Mehta|B-210|9000100002|SC Bose Hostel
+S2003|Ishita Negi|C-018|9000100003|Bhagat Singh Hostel
+S2004|Arjun Bisht|D-305|9000100004|Sardar Patel Hostel
